@@ -1,130 +1,237 @@
-# Fire Data Analysis & Visualization
+# FireFusion: Fire Events Data Pipeline and Analysis
 
-This project performs an in-depth analysis of fire incident data using Python. The goal is to understand fire intensity, distribution, and trends across different locations and time periods.
+## Overview
+
+This project focuses on processing and analyzing satellite-detected fire events using NASA FIRMS data for the Black Summer bushfires (2019–2020) in Australia.
+
+The pipeline extracts, transforms, and loads fire event data into a structured format following the FireFusion database architecture. The processed data is then analyzed to identify temporal and spatial fire patterns.
 
 ---
 
-## Project Overview
+## Project Objectives
 
-Wildfire monitoring is critical for environmental safety and disaster management. This analysis focuses on:
+- Extract raw fire data from NASA FIRMS
+- Transform and clean the dataset
+- Structure data according to the FireFusion schema
+- Perform exploratory data analysis (EDA)
+- Store processed data in a PostgreSQL database
+- Enable integration with other project datasets (weather, vegetation, topography)
 
-- Fire intensity using **Brightness** and **Fire Radiative Power (FRP)**
-- Location-based fire activity comparison
-- Confidence level distribution of fire detections
-- Time-based trends in fire intensity
+---
+
+## Dataset
+
+Source: NASA FIRMS (Fire Information for Resource Management System)
+
+### Raw Data Fields
+
+- latitude  
+- longitude  
+- brightness  
+- scan  
+- track  
+- acq_date  
+- acq_time  
+- satellite  
+- instrument  
+- confidence  
+- version  
+- bright_t31  
+- frp  
+- daynight  
+- type  
 
 ---
 
 ## Project Structure
 data-engineering/
 │
-├── analysis.py # Data analysis & visualization
-│
-├── pipelines/ # Data engineering pipelines
-│ ├── extract.py # Data ingestion script
-│ ├── transform.py # Data cleaning & transformation
-│ ├── load_data.py # Load processed data
-  ├── validation.py # validate processed data
-  ├── save_to_db.py # Save data in form of tables in postgresql database
-  ├── main.py # main script
-│
 ├── data/
-│ ├── raw/ # Raw input data
-│ │ └── fire_data.csv
-│ └── processed/ # Cleaned/processed data
-│ └── fact_fire.csv
-  └── dim_date.csv
-  └── dim_location.csv
-
+│ ├── raw/
+│ │ └── firms_data.csv
+│ └── processed/
+│ └── fire_events.csv
 │
-├── outputs/ # Generated visualizations
-│ ├── brightness_vs_frp.png
-│ ├── location_analysis.png
-│ ├── confidence_distribution.png
-│ └── time_trend.png
+├── pipelines/
+│ └── nasa_firms/
+│ ├── extract_firms.py
+│ ├── transform_firms.py
+│ └── load_to_postgres.py
 │
+├── notebooks/
+│ └── fire_analysis.ipynb
+│
+├── requirements.txt
+├── .env
 └── README.md
+
 
 ---
 
-## Technologies Used
+## Data Pipeline
 
-- Python 
-- Pandas (data processing)
-- Matplotlib (data visualization)
+### 1. Extraction
+
+- Raw FIRMS data is loaded from `data/raw/firms_data.csv`
+- Data is validated for structure and completeness
+
+### 2. Transformation
+
+- Duplicate or invalid rows are removed
+- Data types are standardized
+- Date fields are converted to datetime format
+- Dataset is filtered for the Black Summer period (2019–2020)
+- Final structure matches the FireFusion schema
+
+Output:
+data/processed/fire_events.csv
+
+
+---
+
+### 3. Loading into PostgreSQL
+
+The processed dataset is loaded into a PostgreSQL database for structured storage and integration.
+
+#### Table: Fire_Events
+
+event_id (Primary Key)
+weather_id (Foreign Key - NULL)
+topo_id (Foreign Key - NULL)
+fuel_id (Foreign Key - NULL)
+facility_id (Foreign Key - NULL)
+latitude
+longitude
+event_date
+confidence_score
+source_system
+
+
+Foreign keys are intentionally left NULL at this stage, as dimension tables are populated independently.
+
+---
+
+## PostgreSQL Setup
+
+### 1. Install Dependencies
+
+pip install psycopg2-binary sqlalchemy python-dotenv
+---
+
+### 2. Create Database
+
+CREATE DATABASE firefusion_db;
+
+---
+
+### 3. Configure Environment Variables
+
+Create a `.env` file in the project root:
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=firefusion_db
+DB_USER=postgres
+DB_PASSWORD=your_password
+
+
+---
+
+### 4. Load Data into PostgreSQL
+
+Run the script:
+cd pipelines/nasa_firms
+python load_to_postgres.py
+
+This will:
+
+- Create the `Fire_Events` table (if not exists)
+- Clear existing data
+- Insert processed records from CSV
+
+---
+
+### 5. Verify Data
+
+In PostgreSQL:
+SELECT COUNT(*) FROM "Fire_Events";
+SELECT * FROM "Fire_Events" LIMIT 10;
+
+---
+
+## Data Analysis
+
+The notebook `fire_analysis.ipynb` performs:
+
+### Temporal Analysis
+- Monthly fire trends
+- Daily fire activity patterns
+
+### Spatial Analysis
+- Geographic distribution of fire events
+
+### Intensity Analysis
+- Fire intensity using brightness values
+- Peak fire severity periods
+
+---
+
+## Key Results
+
+- Fire activity peaked in December 2019
+- Gradual increase observed from mid-2019
+- High concentration of fires in southeastern Australia
+- Satellite detections show consistent confidence levels
 
 ---
 
 ## How to Run the Project
 
-### 1. Navigate to project directory
+### 1. Install Dependencies
+pip install -r requirements.txt
 
-```bash
-cd data-engineering
+---
 
-2. Install required libraries
-pip install pandas matplotlib
-3. Run the analysis
-python3 analysis.py
+### 2. Run Data Transformation
+python pipelines/nasa_firms/transform_firms.py
 
-Analysis & Results
-1. Fire Intensity (Brightness vs FRP)
+---
 
-Insight:
+### 3. Load into PostgreSQL
+python pipelines/nasa_firms/load_to_postgres.py
 
-Higher brightness values generally correspond to higher FRP.
-Indicates stronger and more intense fire events.
-2. Location-Based Analysis
+---
 
-Insight:
+### 4. Run Analysis Notebook
+jupyter notebook notebooks/fire_analysis.ipynb
 
-Certain locations consistently show higher fire intensity.
-Useful for identifying high-risk regions.
-3. Confidence Distribution
+---
 
-Insight:
+## Tools and Technologies
 
-Most fire detections fall within mid-to-high confidence levels.
-High-confidence detections are more reliable for analysis.
-4. Fire Trend Over Time
+- Python
+- Pandas
+- Matplotlib
+- PostgreSQL
+- SQLAlchemy
+- Jupyter Notebook
 
-Insight:
+---
 
-Helps track whether fire intensity is increasing or decreasing over time.
-Useful for trend monitoring and forecasting.
-Key Learnings
-Fire intensity can be effectively analyzed using Brightness and FRP
-Data visualization helps uncover hidden patterns
-Location-based grouping provides actionable insights
-Time-series analysis helps identify trends
-Contribution Guidelines
+## Future Improvements
 
-This project follows a structured collaboration workflow:
+- Integrate weather, vegetation, and topography datasets
+- Build predictive fire risk models
+- Develop interactive dashboards
+- Apply geospatial analysis techniques
 
-No direct pushes to main
+---
 
-Use feature branches:
+## Author
 
-feature/fire-analysis-visualization
-Submit all changes via Pull Requests (PRs)
-At least one approval required before merging
-Git Workflow
-# Create a new branch
-git checkout -b feature/fire-analysis-visualization
+Data Engineering Project – FireFusion
 
-# Add changes
-git add .
+---
 
-# Commit changes
-git commit -m "feat: add fire data analysis and visualizations"
+## License
 
-# Push to your fork
-git push origin feature/fire-analysis-visualization
-
-Then open a Pull Request on GitHub.
-
-Future Improvements
-Add machine learning model for fire prediction
-Advanced visualizations (heatmaps, correlations)
-Integration with real-time satellite data
-Automated report generation (PDF)
+This project is for educational purposes.
