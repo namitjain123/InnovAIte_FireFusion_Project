@@ -1,6 +1,6 @@
 -- Seed data for bushfire risk database
 
-INSERT INTO public.topography (topo_id, latitude, longitude, elevation_meters, slope_angle) VALUES
+INSERT INTO topography (topo_id, latitude, longitude, elevation_meters, slope_angle) VALUES
 (1, -37.81, 144.96, 31.0, 2.5),
 (2, -37.68, 145.73, 520.0, 18.3),
 (3, -37.75, 145.14, 120.0, 8.7),
@@ -12,7 +12,7 @@ INSERT INTO public.topography (topo_id, latitude, longitude, elevation_meters, s
 (9, -37.56, 143.85, 440.0, 19.1),
 (10, -38.68, 146.05, 60.0, 4.6);
 
-INSERT INTO public.weather_conditions (weather_id, latitude, longitude, record_date, temperature_c, wind_speed_kmh, relative_humidity) VALUES
+INSERT INTO weather_conditions (weather_id, latitude, longitude, record_date, temperature_c, wind_speed_kmh, relative_humidity) VALUES
 (1, -37.68, 145.73, '2025-01-15 14:00:00', 42.3, 65.0, 8.0),
 (2, -37.75, 145.14, '2025-01-15 13:30:00', 39.8, 48.0, 12.5),
 (3, -36.76, 144.28, '2025-02-03 15:00:00', 44.1, 72.0, 6.0),
@@ -24,7 +24,7 @@ INSERT INTO public.weather_conditions (weather_id, latitude, longitude, record_d
 (9, -37.68, 145.73, '2025-02-14 15:00:00', 43.6, 80.0, 5.5),
 (10, -37.81, 144.96, '2025-03-01 14:00:00', 37.0, 35.0, 15.0);
 
-INSERT INTO public.fuel_and_vegetation (fuel_id, latitude, longitude, record_date, vegetation_class, dyrness_index, soil_moisture) VALUES
+INSERT INTO fuel_and_vegetation (fuel_id, latitude, longitude, record_date, vegetation_class, dryness_index, soil_moisture) VALUES
 (1, -37.68, 145.73, '2025-01-10', 'Wet Sclerophyll Forest', 8.5, 0.08),
 (2, -37.75, 145.14, '2025-01-10', 'Dry Sclerophyll Forest', 7.2, 0.12),
 (3, -36.76, 144.28, '2025-02-01', 'Grassland', 9.1, 0.05),
@@ -36,7 +36,7 @@ INSERT INTO public.fuel_and_vegetation (fuel_id, latitude, longitude, record_dat
 (9, -37.68, 145.73, '2025-02-12', 'Wet Sclerophyll Forest', 9.0, 0.06),
 (10, -37.81, 144.96, '2025-02-28', 'Urban Grassland', 6.0, 0.14);
 
-INSERT INTO public.at_risk_infrastructure (facility_id, facility_name, category, latitude, longitude, lga) VALUES
+INSERT INTO at_risk_infrastructure (facility_id, facility_name, category, latitude, longitude, lga) VALUES
 (1, 'Healesville Primary School', 'School', -37.65, 145.52, 'Yarra Ranges'),
 (2, 'Upper Yarra Reservoir', 'Water Supply', -37.68, 145.92, 'Yarra Ranges'),
 (3, 'Bendigo Hospital', 'Hospital', -36.76, 144.28, 'Greater Bendigo'),
@@ -48,7 +48,7 @@ INSERT INTO public.at_risk_infrastructure (facility_id, facility_name, category,
 (9, 'Yarra Glen Kindergarten', 'Childcare', -37.66, 145.37, 'Yarra Ranges'),
 (10, 'Lilydale Rail Hub', 'Transport', -37.76, 145.35, 'Yarra Ranges');
 
-INSERT INTO public.fire_events (event_id, weather_id, topo_id, fuel_id, facility_id, latitude, longitude, event_date, confidence_score, source_system) VALUES
+INSERT INTO fire_events (event_id, weather_id, topo_id, fuel_id, facility_id, latitude, longitude, event_date, confidence_score, source_system) VALUES
 (1, 1, 2, 1, 1, -37.67, 145.70, '2025-01-15', 92, 'MODIS'),
 (2, 2, 3, 2, NULL, -37.74, 145.12, '2025-01-15', 78, 'VIIRS'),
 (3, 3, 5, 3, 3, -36.77, 144.30, '2025-02-03', 95, 'MODIS'),
