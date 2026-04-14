@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from ..internal.services.forecast_service import ForecastService
 from ..internal.services.websocket_connection_manager import ws_manager
+from ..internal.services.caching_service import cache_client
 
 router = APIRouter(prefix="/api", tags=["bushfire"])
 
@@ -15,5 +16,4 @@ async def websocket_endpoint(websocket: WebSocket):
 
 @router.get("/bushfire-forecast", tags=["bushfire"])
 async def get_bushfire_forecast(service: ForecastService = Depends(ForecastService)):
-    # get from cache
-    pass
+    return await service.fetch_predictions()
