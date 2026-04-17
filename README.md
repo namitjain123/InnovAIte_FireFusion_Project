@@ -34,4 +34,95 @@ The primary focus for Sprint 1 is the **bushfire forecasting model** — predict
 | Frontend | Dashboard UI, GeoJSON map rendering, data visualisation |
  
 ---
+
+GitHub Version Control Guidelines
+
+This document outlines the version control strategy used in this project. It defines branch structure, development workflow, pull request process, and access control to ensure consistency across the team.
+
+1. Branch Structure
+
+The repository uses the following branches:
+
+main
+Contains production-ready and approved code only.
+developer
+Integration branch for completed and reviewed features.
+release
+Used for release preparation, final testing, and validation.
+backup
+Maintains a stable backup copy of the project.
+feature
+Task-based branches created for individual development work.
+bugfix
+Branches created to fix defects or issues.
+2. Branch Creation
+
+Each new task must begin with a separate branch created from the developer branch.
+
+Naming conventions
+feature-taskId-task-name
+bugfix-issueId-issue-name
+
+This approach keeps development work isolated and improves traceability.
+
+3. Development Process
+
+Each developer should follow these steps:
+
+Pull the latest code from the developer branch
+Create a new task-based branch
+Complete the assigned work within that branch
+Commit changes with clear and meaningful commit messages
+Push the branch to GitHub
+4. Pull Request Process
+
+Once the task is complete, a pull request must be created from the feature or bugfix branch into the developer branch.
+
+Each pull request should include:
+
+A clear title with task or issue ID
+A short description of the changes
+Details of affected files or modules
+Confirmation that testing has been completed
+
+At least one integration lead or an approved reviewer must review the pull request before merging.
+
+5. Review and Approval
+
+Before approval, reviewers should check:
+
+Code quality and readability
+Branch conflicts
+Naming consistency
+Build and test results
+No unintended changes to unrelated files
+
+Only approved pull requests should be merged.
+
+6. Merging Rules
+Developers must not merge directly into the main branch
+All regular development merges go into the developer branch
+Only tested and approved code moves from developer to release, then to main
+The main and developer branches should have restricted access
+7. Release Process
+Create a release branch from the developer branch when features are ready
+Perform testing and final review in the release branch
+Fix only release-related issues in this branch
+Merge the release branch into main once stable
+Update the backup branch after confirming stability
+8. Backup and Safety
+
+The backup branch maintains a recent stable version of the project.
+
+It should be updated only after stable and approved releases
+It provides a fallback option in case of issues in other branches
+9. Access Control
+main
+Merge access limited to integration leads or authorised members
+developer
+Controlled merge access
+feature / bugfix branches
+Developers can manage their own branches
+
+Branch protection rules should be enabled wherever possible to enforce these controls.
  
